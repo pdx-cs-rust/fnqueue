@@ -5,7 +5,7 @@ fn main() {
     for i in 1..=3 {
         q.push_back(i);
     }
-    for i in q.iter() {
+    for i in &q {
         println!("{}", i);
     }
 }

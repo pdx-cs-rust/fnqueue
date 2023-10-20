@@ -60,6 +60,15 @@ impl<'a, T> Iterator for FnQueueIter<'a, T> {
     }
 }
 
+impl<'a, T> IntoIterator for &'a FnQueue<T> {
+    type Item = &'a T;
+    type IntoIter = FnQueueIter<'a, T>;
+
+    fn into_iter(self) -> Self::IntoIter {
+        self.iter()
+    }
+}
+
 impl<T> FnQueue<T> {
     fn unstack(&mut self) {
         while let Some(v) = self.back.pop() {
