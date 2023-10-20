@@ -18,11 +18,64 @@ impl<T> Default for FnQueue<T> {
     }
 }
 
+
+enum Posn {
+    InFront(usize),
+    InBack(usize),
+    Empty,
+}
+
+pub struct FnQueueIter<'a, T> {
+    q: &'a FnQueue<T>,
+    posn: Posn,
+}
+
+impl<'a, T> Iterator for FnQueueIter<'a, T> {
+    type Item = &'a T;
+
+    fn next(&mut self) -> Option<Self::Item> {
+        let result = match self.posn {
+            Posn::InFront(i) => Some(&self.q.front[i]),
+            Posn::InBack(i) => Some(&self.q.back[i]),
+            Posn::Empty => None,
+        };
+        self.posn = match self.posn {
+            Posn::InFront(i) => {
+                if i > 0 {
+                    Posn::InFront(i - 1)
+                } else {
+                    Posn::InBack(0)
+                }
+            }
+            Posn::InBack(i) => {
+                if i < self.q.back.len() - 1 {
+                    Posn::InBack(i + 1)
+                } else {
+                    Posn::Empty
+                }
+            }
+            Posn::Empty => Posn::Empty,
+        };
+        result
+    }
+}
+
 impl<T> FnQueue<T> {
     fn unstack(&mut self) {
         while let Some(v) = self.back.pop() {
             self.front.push(v);
         }
+    }
+
+    pub fn iter(&self) -> FnQueueIter<T> {
+        let posn = if !self.front.is_empty() {
+            Posn::InFront(self.front.len() - 1)
+        } else if !self.back.is_empty() {
+            Posn::InBack(0)
+        } else {
+            Posn::Empty
+        };
+        FnQueueIter { q: self, posn }
     }
 }
 
