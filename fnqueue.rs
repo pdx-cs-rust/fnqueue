@@ -14,10 +14,12 @@ pub struct FnQueue<T> {
 
 impl<T> Default for FnQueue<T> {
     fn default() -> Self {
-        FnQueue { front: Vec::new(), back: Vec::new() }
+        FnQueue {
+            front: Vec::new(),
+            back: Vec::new(),
+        }
     }
 }
-
 
 enum Posn {
     InFront(usize),
