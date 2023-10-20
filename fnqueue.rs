@@ -49,6 +49,14 @@ impl<T> Queue<T> for FnQueue<T> {
     }
 }
 
+impl<T> Iterator for FnQueue<T> {
+    type Item = T;
+
+    fn next(&mut self) -> Option<T> {
+        self.pop_front()
+    }
+}
+
 #[test]
 fn test_queue() {
     let mut q = FnQueue::default();
