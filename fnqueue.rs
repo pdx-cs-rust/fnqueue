@@ -1,7 +1,7 @@
 // Idea: Push onto the back vector. Pop from the front vector.
 // If the front vector is empty on pop, reverse the back vector
 // and make it the front vector.
-/// A "functional-style" queue implementation. 
+/// A "functional-style" queue implementation.
 pub struct FnQueue<T> {
     front: Vec<T>,
     back: Vec<T>,
