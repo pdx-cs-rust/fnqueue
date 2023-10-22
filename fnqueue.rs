@@ -73,9 +73,9 @@ impl<'a, T> IntoIterator for &'a FnQueue<T> {
 
 impl<T> FnQueue<T> {
     fn unstack(&mut self) {
-        while let Some(v) = self.back.pop() {
-            self.front.push(v);
-        }
+        assert!(self.front.is_empty());
+        std::mem::swap(&mut self.front, &mut self.back);
+        self.front.reverse();
     }
 
     pub fn iter(&self) -> FnQueueIter<T> {
