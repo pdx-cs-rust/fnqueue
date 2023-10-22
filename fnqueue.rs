@@ -1,12 +1,7 @@
-pub trait Queue<T> {
-    fn push_back(&mut self, v: T);
-    fn pop_front(&mut self) -> Option<T>;
-    fn peek_front(&self) -> Option<&T>;
-}
-
-/// Idea: Push onto the back vector. Pop from the front vector.
-/// If the front vector is empty on pop, reverse the back vector
-/// and make it the front vector.
+// Idea: Push onto the back vector. Pop from the front vector.
+// If the front vector is empty on pop, reverse the back vector
+// and make it the front vector.
+/// A "functional-style" queue implementation. 
 pub struct FnQueue<T> {
     front: Vec<T>,
     back: Vec<T>,
@@ -27,6 +22,10 @@ enum Posn {
     Empty,
 }
 
+/// An iterator over references to elements of a [FnQueue].
+///
+/// This struct is created by the [iter] method on
+/// [FnQueue]. See its documentation for more.
 pub struct FnQueueIter<'a, T> {
     q: &'a FnQueue<T>,
     posn: Posn,
@@ -78,6 +77,7 @@ impl<T> FnQueue<T> {
         self.front.reverse();
     }
 
+    /// Returns an iterator over item refs.
     pub fn iter(&self) -> FnQueueIter<T> {
         let posn = if !self.front.is_empty() {
             Posn::InFront(self.front.len() - 1)
@@ -90,12 +90,14 @@ impl<T> FnQueue<T> {
     }
 }
 
-impl<T> Queue<T> for FnQueue<T> {
-    fn push_back(&mut self, v: T) {
+impl<T> FnQueue<T> {
+    /// Push an element on the back of the queue.
+    pub fn push_back(&mut self, v: T) {
         self.back.push(v);
     }
 
-    fn pop_front(&mut self) -> Option<T> {
+    /// Pop an element from the front of the queue.
+    pub fn pop_front(&mut self) -> Option<T> {
         match self.front.pop() {
             Some(v) => Some(v),
             None => {
@@ -105,7 +107,9 @@ impl<T> Queue<T> for FnQueue<T> {
         }
     }
 
-    fn peek_front(&self) -> Option<&T> {
+    /// Get a `ref` to the element on the front of the
+    /// queue, without removing the element.
+    pub fn peek_front(&self) -> Option<&T> {
         match self.front.last() {
             Some(v) => Some(v),
             None => self.front.first(),
